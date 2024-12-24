@@ -27,7 +27,6 @@ RUN npm install -g npm@latest
 # Copy the necessary application files to the root directory
 COPY server.js /server.js
 COPY package.json /package.json
-COPY package-lock.json /package-lock.json
 
 # Expose necessary ports (VS Code on 8080 and your backend API on 3000)
 EXPOSE 8080 3000
@@ -35,6 +34,9 @@ EXPOSE 8080 3000
 # Copy the start.sh script to the root directory and make it executable
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
+
+# Regenerate package-lock.json to ensure it's in sync
+RUN npm install --package-lock-only
 
 # Install dependencies from package.json
 RUN npm install

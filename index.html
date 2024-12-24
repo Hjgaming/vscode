@@ -1,1 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Run Code Server</title>
+</head>
+<body>
+  <h1>Launch VS Code Server</h1>
+  <button id="launchCodeServer">Start Code Server</button>
+  <p id="output"></p>
 
+  <script>
+    document.getElementById("launchCodeServer").addEventListener("click", async () => {
+      const outputElement = document.getElementById("output");
+      outputElement.textContent = "Starting Code Server...";
+      try {
+        const response = await fetch("http://localhost:3000/run-code-server");
+        const data = await response.text();
+        outputElement.textContent = data;
+      } catch (error) {
+        outputElement.textContent = `Error: ${error.message}`;
+      }
+    });
+  </script>
+</body>
+</html>

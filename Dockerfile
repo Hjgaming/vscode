@@ -4,16 +4,14 @@ FROM codercom/code-server:latest
 # Set the working directory to root
 WORKDIR /
 
-# Install required dependencies
+# Install required dependencies and Node.js version 20.x
 USER root
 RUN apt-get update \
     && apt-get install -y curl \
-    && curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash \
-    && export NVM_DIR="$HOME/.nvm" \
-    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
-    && nvm install 16 \
-    && nvm use 16 \
-    && npm install -g npm \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get install -y npm \
+    && apt-get install -y build-essential \
     && apt-get clean
 
 # Copy the necessary application files to the root directory

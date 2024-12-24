@@ -15,7 +15,13 @@ RUN apt-get update && apt-get upgrade -y \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
-# Ensure npm is up-to-date (this is to install the correct npm version)
+# Clean npm cache before installation
+RUN npm cache clean --force
+
+# Remove node_modules and npm cache before installing dependencies
+RUN rm -rf node_modules && rm -rf /root/.npm
+
+# Ensure npm is up-to-date
 RUN npm install -g npm@latest
 
 # Copy the necessary application files to the root directory

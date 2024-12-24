@@ -8,9 +8,12 @@ WORKDIR /workspace
 COPY server.js /workspace/server.js
 COPY package*.json /workspace/
 
-# Install Node.js and dependencies
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
-    && apt-get install -y nodejs \
+# Install sudo and Node.js with elevated privileges
+USER root
+RUN apt-get update \
+    && apt-get install -y curl sudo \
+    && curl -fsSL https://deb.nodesource.com/setup_16.x | sudo bash - \
+    && sudo apt-get install -y nodejs \
     && npm install
 
 # Expose the VS Code Server port and your backend service port

@@ -1,27 +1,28 @@
 # Use official image for code-server (VS Code Server)
 FROM codercom/code-server:latest
 
-# Set the working directory in the container
-WORKDIR /app
-
-# Install required packages
+# Install required packages (curl, sudo, node.js, npm)
 USER root
 RUN apt-get update \
     && apt-get install -y curl sudo \
     && curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
     && sudo apt-get install -y nodejs \
-    && npm install
+    && sudo apt-get install -y npm
 
 # Copy the necessary application files to the working directory
-COPY server.js /app/server.js
-COPY package*.json /app/
+COPY server.js /server.js
+COPY package.json /package.json
+COPY package-lock.json /package-lock.json  
 
 # Expose necessary ports (VS Code on 8080 and your backend API on 3000)
 EXPOSE 8080 3000
 
 # Copy the start.sh script to the container and make it executable
-COPY start.sh /app/start.sh
-RUN chmod +x /app/start.sh
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
-# Start both the code-server and backend Node.js service using the start.sh script
-CMD ["/app/start.sh"]
+# Install dependencies from package.json
+RUN npm install
+
+# Start both the code-server and backend (server.js) in the same container using the start.sh script
+CMD ["/start.sh"]

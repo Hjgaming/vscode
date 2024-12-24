@@ -4,20 +4,24 @@ FROM codercom/code-server:latest
 # Set the working directory to root
 WORKDIR /
 
-# Install required dependencies and Node.js version 20.x
+# Install curl, update packages, and setup Node.js 20.x
 USER root
-RUN apt-get update \
-    && apt-get install -y curl \
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y curl gnupg2 lsb-release \
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
-    && apt-get install -y npm \
     && apt-get install -y build-essential \
-    && apt-get clean
+    && apt-get clean \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# Ensure npm is up-to-date (this is to install the correct npm version)
+RUN npm install -g npm@latest
 
 # Copy the necessary application files to the root directory
 COPY server.js /server.js
 COPY package.json /package.json
-COPY package-lock.json /package-lock.json 
+COPY package-lock.json /package-lock.json
 
 # Expose necessary ports (VS Code on 8080 and your backend API on 3000)
 EXPOSE 8080 3000
@@ -29,5 +33,5 @@ RUN chmod +x /start.sh
 # Install dependencies from package.json
 RUN npm install
 
-# Start both the code-server and backend (server.js) in the same container using the start.sh script
+# Add Render specific start command or entry point
 CMD ["/start.sh"]

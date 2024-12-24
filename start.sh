@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Start code-server (VS Code server) on port 8080
-code-server --host 0.0.0.0 --port 8080 &
+# Start VS Code server (code-server) on port 8080
+/code-server --bind-addr 0.0.0.0:8080 --auth none &
 
-# Start your backend server (Node.js application) on port 3000
-node /app/server.js
+# Start your backend server (e.g., Node.js) on port 3000
+node /server.js

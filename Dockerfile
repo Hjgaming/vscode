@@ -35,9 +35,6 @@ EXPOSE 8080 3000
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-# Regenerate package-lock.json to ensure it's in sync
-RUN npm install --package-lock-only
-
 # Install dependencies from package.json
 RUN npm install
 

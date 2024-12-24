@@ -35,8 +35,5 @@ EXPOSE 8080 3000
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-# Install dependencies from package.json
-RUN npm install
-
 # Add Render specific start command or entry point
 CMD ["/start.sh"]

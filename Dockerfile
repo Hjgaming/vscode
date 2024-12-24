@@ -1,23 +1,27 @@
-# Base image: VS Code server
+# Use official image for code-server (VS Code Server)
 FROM codercom/code-server:latest
 
-# Set the working directory
+# Set the working directory in the container
 WORKDIR /workspace
 
-# Copy your backend code into the container
-COPY server.js /workspace/server.js
-COPY package*.json /workspace/
-
-# Install sudo and Node.js with elevated privileges
+# Install required packages
 USER root
 RUN apt-get update \
     && apt-get install -y curl sudo \
-    && curl -fsSL https://deb.nodesource.com/setup_16.x | sudo bash - \
+    && curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
     && sudo apt-get install -y nodejs \
     && npm install
 
-# Expose the VS Code Server port and your backend service port
+# Copy application files (server.js, package.json, etc.) to the working directory
+COPY server.js /workspace/server.js
+COPY package*.json /workspace/
+
+# Expose necessary ports
 EXPOSE 8080 3000
 
-# Start both services: code-server and Node.js backend
-CMD ["sh", "-c", "code-server --host 0.0.0.0 --port 8080 & node server.js"]
+# Start code-server and backend (server.js) in the same container using a shell script
+COPY start.sh /workspace/start.sh
+RUN chmod +x /workspace/start.sh
+
+# Start the services using the custom shell script
+CMD ["/workspace/start.sh"]

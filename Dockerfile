@@ -2,7 +2,7 @@
 FROM codercom/code-server:latest
 
 # Set the working directory in the container
-WORKDIR /workspace
+WORKDIR /app
 
 # Install required packages
 USER root
@@ -12,16 +12,16 @@ RUN apt-get update \
     && sudo apt-get install -y nodejs \
     && npm install
 
-# Copy application files (server.js, package.json, etc.) to the working directory
-COPY server.js /workspace/server.js
-COPY package*.json /workspace/
+# Copy the necessary application files to the working directory
+COPY server.js /app/server.js
+COPY package*.json /app/
 
-# Expose necessary ports
+# Expose necessary ports (VS Code on 8080 and your backend API on 3000)
 EXPOSE 8080 3000
 
-# Start code-server and backend (server.js) in the same container using a shell script
-COPY start.sh /workspace/start.sh
-RUN chmod +x /workspace/start.sh
+# Copy the start.sh script to the container and make it executable
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
 
-# Start the services using the custom shell script
-CMD ["/workspace/start.sh"]
+# Start both the code-server and backend Node.js service using the start.sh script
+CMD ["/app/start.sh"]
